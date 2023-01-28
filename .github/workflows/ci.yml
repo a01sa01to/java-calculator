@@ -34,8 +34,10 @@ jobs:
           echo "FX_MODULES=javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" >> $GITHUB_ENV
       - name: Build
         run: javac --module-path $FX_PATH --add-modules $FX_MODULES App.java
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
       - name: Run
         run: |
-          java --module-path $FX_PATH --add-modules $FX_MODULES App &
+          xvfb-run java --module-path $FX_PATH --add-modules $FX_MODULES App &
           sleep 5
           kill $!
