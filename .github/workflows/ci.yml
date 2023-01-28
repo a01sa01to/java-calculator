@@ -9,9 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [8, 11, 16, 17]
-        distribution:
-          ["temurin", "zulu", "adopt", "liberica", "corretto", "microsoft"]
+        java: ["8", "17", "19"]
+        distribution: ["zulu", "corretto", "microsoft"]
     name: Test Java ${{ matrix.java }} (${{ matrix.distribution }})
     steps:
       - name: Checkout
