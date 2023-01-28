@@ -1,4 +1,7 @@
 build.bat
+.idea
+out
+java-calculator.iml
 
 # Compiled class file
 *.class
