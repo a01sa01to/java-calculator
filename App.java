@@ -71,17 +71,17 @@ public class App extends Application {
   }
 
   private void onInput(String txt) {
-    if (txt == "C") ClearHandler();
-    else if (txt == "BS") BackspaceHandler();
-    else if (txt == "(") OpenBracketHandler();
-    else if (txt == ")") CloseBracketHandler();
-    else if (txt == "=") EqualHandler();
-    else if (txt == "0") ZeroHandler();
-    else if (txt == ".") DotHandler();
-    else if (txt == "abs") OperatorHandler(" abs(");
-    else if (txt == "mod") OperatorHandler(" mod ");
-    else if (txt == "log") OperatorHandler(" log base ");
-    else if (!Utility.isNumber(txt) && txt != "e") OperatorHandler(" " + txt + " ");
+    if (txt.equals("C")) ClearHandler();
+    else if (txt.equals("BS")) BackspaceHandler();
+    else if (txt.equals("(")) OpenBracketHandler();
+    else if (txt.equals(")")) CloseBracketHandler();
+    else if (txt.equals("=")) EqualHandler();
+    else if (txt.equals("0")) ZeroHandler();
+    else if (txt.equals(".")) DotHandler();
+    else if (txt.equals("abs")) OperatorHandler(" abs(");
+    else if (txt.equals("mod")) OperatorHandler(" mod ");
+    else if (txt.equals("log")) OperatorHandler(" log base ");
+    else if (!Utility.isNumber(txt) && !txt.equals("e")) OperatorHandler(" " + txt + " ");
     else NumberHandler(txt);
     ScrollLabelToRight();
   }
@@ -130,7 +130,7 @@ public class App extends Application {
 
   private void NumberHandler(String s) {
     if (str.endsWith("e")) return;
-    if (s == "e" && !Utility.isAfterOperator(str)) return;
+    if (s.equals("e") && !Utility.isAfterOperator(str)) return;
     if (!isDotUsed) str = Utility.removeLeadingZero(str);
     AppendToText(s);
   }
