@@ -8,11 +8,27 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+class Utility {
+  static Boolean isAfterOperator(String str) {
+    return str.endsWith(" ") || str.endsWith("(");
+  }
+
+  static Boolean isNumber(String str) {
+    return str != null && str.matches("[0-9.]+");
+  }
+
+  static String removeLeadingZero(String str) {
+    while (str.endsWith("0")) str = str.substring(0, str.length() - 1);
+    return str;
+  }
+}
+
 public class App extends Application {
   static String str = "0";
   static Text txt = new Text(str);
   static ScrollPane topLabel = new ScrollPane();
   static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
+  static Boolean isDotUsed = false;
 
   @Override
   public void start(Stage primaryStage) {
@@ -62,39 +78,61 @@ public class App extends Application {
     else if (txt == "=") EqualHandler();
     else if (txt == "0") ZeroHandler();
     else if (txt == ".") DotHandler();
-    else if (txt == "abs") AppendToText("abs(");
-    else if (txt == "mod") AppendToText(" mod ");
-    else if (txt == "log") AppendToText(" log base ");
-    else AppendToText(txt);
+    else if (txt == "abs") OperatorHandler(" abs(");
+    else if (txt == "mod") OperatorHandler(" mod ");
+    else if (txt == "log") OperatorHandler(" log base ");
+    else if (!Utility.isNumber(txt) && txt != "e") OperatorHandler(" " + txt + " ");
+    else NumberHandler(txt);
     ScrollLabelToRight();
   }
 
   private void ClearHandler() {
     // Todo: implement
+    txt.setText(str = "0");
   }
 
   private void BackspaceHandler() {
     // Todo: implement
+    txt.setText(str = str.substring(0, str.length() -1));
   }
 
   private void OpenBracketHandler() {
     // Todo: implement
+    AppendToText("(");
   }
 
   private void CloseBracketHandler() {
     // Todo: implement
+    AppendToText(")");
   }
 
   private void EqualHandler() {
     // Todo: implement
+    AppendToText("=");
   }
 
   private void ZeroHandler() {
     // Todo: implement
+    AppendToText("0");
   }
 
   private void DotHandler() {
-    // Todo: implement
+    if (isDotUsed) return;
+    isDotUsed = true;
+    AppendToText(".");
+  }
+
+  private void OperatorHandler(String s) {
+    if (Utility.isAfterOperator(str)) return;
+    AppendToText(s);
+    isDotUsed = false;
+  }
+
+  private void NumberHandler(String s) {
+    if (str.endsWith("e")) return;
+    if (s == "e" && !Utility.isAfterOperator(str)) return;
+    if (!isDotUsed) str = Utility.removeLeadingZero(str);
+    AppendToText(s);
   }
 
   private void AppendToText(String s) {
