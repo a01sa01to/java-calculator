@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -38,11 +39,64 @@ public class App extends Application {
       buttons[i] = new Button();
       buttons[i].setPrefSize(50, 50);
       buttons[i].setText(buttonText[i]);
+      buttons[i].setOnAction(this::onInput);
       gridPane.add(buttons[i], i % 5, i / 5);
     }
     root.setCenter(gridPane);
 
     primaryStage.setScene(new Scene(root));
     primaryStage.show();
+  }
+
+  private void onInput(ActionEvent ev) {
+    Button btn = (Button) ev.getSource();
+    String txt = btn.getText();
+    onInput(txt);
+  }
+
+  private void onInput(String txt) {
+    if (txt == "C") ClearHandler();
+    else if (txt == "BS") BackspaceHandler();
+    else if (txt == "(") OpenBracketHandler();
+    else if (txt == ")") CloseBracketHandler();
+    else if (txt == "=") EqualHandler();
+    else if (txt == "0") ZeroHandler();
+    else if (txt == ".") DotHandler();
+    else if (txt == "abs") AppendToText("abs(");
+    else if (txt == "mod") AppendToText(" mod ");
+    else if (txt == "log") AppendToText(" log base ");
+    else AppendToText(txt);
+  }
+
+  private void ClearHandler() {
+    // Todo: implement
+  }
+
+  private void BackspaceHandler() {
+    // Todo: implement
+  }
+
+  private void OpenBracketHandler() {
+    // Todo: implement
+  }
+
+  private void CloseBracketHandler() {
+    // Todo: implement
+  }
+
+  private void EqualHandler() {
+    // Todo: implement
+  }
+
+  private void ZeroHandler() {
+    // Todo: implement
+  }
+
+  private void DotHandler() {
+    // Todo: implement
+  }
+
+  private void AppendToText(String s) {
+    // Todo: implement
   }
 }
