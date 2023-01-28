@@ -93,7 +93,10 @@ public class App extends Application {
 
   private void BackspaceHandler() {
     // Todo: implement
-    txt.setText(str = str.substring(0, str.length() -1));
+    assert(str.length() > 0);
+    str = str.substring(0, str.length() - 1);
+    if (str.length() == 0) str = "0";
+    txt.setText(str);
   }
 
   private void OpenBracketHandler() {
