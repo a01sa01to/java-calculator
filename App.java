@@ -133,9 +133,32 @@ public class App extends Application {
    * BackSpace の処理
    */
   private void BackspaceHandler() {
-    // Todo: implement
     assert (str.length() > 0);
-    str = str.substring(0, str.length() - 1);
+    if (str.endsWith("abs(")) {
+      // 特殊例
+      str = str.substring(0, str.length() - 4);
+      bracketCnt--;
+    } else if (str.endsWith("(")) {
+      str = str.substring(0, str.length() - 1);
+      bracketCnt--;
+    } else if (str.endsWith(")")) {
+      str = str.substring(0, str.length() - 1);
+      bracketCnt++;
+    } else if (str.endsWith(" ")) {
+      // 演算子で終わっている
+      // 消すべき部分を計算
+      String[] tokens = str.split(" ");
+      int r = tokens.length;
+      while (r > 0 && (!Utility.isNumber(tokens[r - 1]) && !tokens[r - 1].equals("e"))) r--;
+
+      // つなげる
+      if (r > 0) str = tokens[0];
+      else str = "";
+      for (int i = 1; i < r; i++) str = str.concat(" " + tokens[i]);
+    } else {
+      // 数字で終わっている
+      str = str.substring(0, str.length() - 1);
+    }
     if (str.length() == 0) str = "0";
     txt.setText(str);
   }
