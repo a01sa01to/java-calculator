@@ -66,6 +66,7 @@ public class App extends Application {
     else if (txt == "mod") AppendToText(" mod ");
     else if (txt == "log") AppendToText(" log base ");
     else AppendToText(txt);
+    ScrollLabelToRight();
   }
 
   private void ClearHandler() {
@@ -98,5 +99,9 @@ public class App extends Application {
 
   private void AppendToText(String s) {
     txt.setText(str = str.concat(s));
+  }
+
+  private void ScrollLabelToRight() {
+    topLabel.setHvalue(topLabel.getHmax());
   }
 }
