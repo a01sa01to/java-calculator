@@ -123,8 +123,10 @@ public class App extends Application {
    * Clear の処理
    */
   private void ClearHandler() {
-    // Todo: implement
     txt.setText(str = "0");
+    isDotUsed = false;
+    bracketCnt = 0;
+    ScrollLabelToRight();
   }
 
   /**
