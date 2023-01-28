@@ -97,6 +97,6 @@ public class App extends Application {
   }
 
   private void AppendToText(String s) {
-    // Todo: implement
+    txt.setText(str = str.concat(s));
   }
 }
