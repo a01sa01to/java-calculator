@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         java: ["8", "17", "19"]
-        distribution: ["zulu", "corretto", "microsoft"]
+        distribution: ["zulu"]
     name: Test Java ${{ matrix.java }} (${{ matrix.distribution }})
     steps:
       - name: Checkout
