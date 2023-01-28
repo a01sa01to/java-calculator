@@ -31,6 +31,7 @@ public class App extends Application {
   static ScrollPane topLabel = new ScrollPane();
   static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
   static Boolean isDotUsed = false;
+  static Integer bracketCnt = 0;
 
   @Override
   public void start(Stage primaryStage) {
@@ -101,12 +102,22 @@ public class App extends Application {
   }
 
   private void OpenBracketHandler() {
-    // Todo: implement
+    // 数字の直後かつ初期状態じゃない
+    if (!Utility.isAfterOperator(str) && !str.equals("0")) return;
+
+    str = Utility.removeLeadingZero(str);
+    bracketCnt++;
     AppendToText("(");
   }
 
   private void CloseBracketHandler() {
-    // Todo: implement
+    // 演算子直後の閉じ括弧
+    if (Utility.isAfterOperator(str)) return;
+
+    // 対応する開き括弧がない
+    if (bracketCnt == 0) return;
+
+    bracketCnt--;
     AppendToText(")");
   }
 
