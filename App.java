@@ -18,7 +18,9 @@ class Utility {
   }
 
   static String removeLeadingZero(String str) {
-    while (str.endsWith("0")) str = str.substring(0, str.length() - 1);
+    String[] tokens = str.split(" ");
+    String lastToken = tokens[tokens.length - 1];
+    if (lastToken.equals("0")) str = str.substring(0, str.length() - 1);
     return str;
   }
 }
@@ -76,7 +78,6 @@ public class App extends Application {
     else if (txt.equals("(")) OpenBracketHandler();
     else if (txt.equals(")")) CloseBracketHandler();
     else if (txt.equals("=")) EqualHandler();
-    else if (txt.equals("0")) ZeroHandler();
     else if (txt.equals(".")) DotHandler();
     else if (txt.equals("abs")) OperatorHandler(" abs(");
     else if (txt.equals("mod")) OperatorHandler(" mod ");
@@ -93,7 +94,7 @@ public class App extends Application {
 
   private void BackspaceHandler() {
     // Todo: implement
-    assert(str.length() > 0);
+    assert (str.length() > 0);
     str = str.substring(0, str.length() - 1);
     if (str.length() == 0) str = "0";
     txt.setText(str);
@@ -112,11 +113,6 @@ public class App extends Application {
   private void EqualHandler() {
     // Todo: implement
     AppendToText("=");
-  }
-
-  private void ZeroHandler() {
-    // Todo: implement
-    AppendToText("0");
   }
 
   private void DotHandler() {
