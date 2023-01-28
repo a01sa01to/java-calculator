@@ -30,7 +30,7 @@ jobs:
         run: |
           unzip ./.temp/javafx.zip -d ./.temp
           mv ./.temp/javafx-sdk* ./.temp/javafx
-          echo "FX_PATH=$(pwd)/.temp/javafx/lib"
+          echo "FX_PATH=$(pwd)/.temp/javafx/lib" >> $GITHUB_ENV
           echo "FX_MODULES=javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" >> $GITHUB_ENV
       - name: Build
         run: javac --module-path $FX_PATH --add-modules $FX_MODULES App.java
