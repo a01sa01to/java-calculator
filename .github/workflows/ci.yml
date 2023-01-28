@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8, 11, 16, 17]
+        distribution:
+          ["temurin", "zulu", "adopt", "liberica", "corretto", "microsoft"]
+    name: Test Java ${{ matrix.java }} (${{ matrix.distribution }})
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java with JavaFX
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          java-package: jre+fx
+          architecture: x64
+          check-latest: true
+      - name: Build
+        run: javac App.java
