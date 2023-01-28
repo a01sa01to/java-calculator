@@ -48,9 +48,12 @@ public class App extends Application {
   static String str = "0";
   static Text txt = new Text(str);
   static ScrollPane topLabel = new ScrollPane();
-  static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
   static Boolean isDotUsed = false;
   static Integer bracketCnt = 0;
+
+  // ----- Constants ----- //
+
+  static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
 
   // ----- Main ----- //
   @Override
@@ -102,8 +105,14 @@ public class App extends Application {
     else if (txt.equals(")")) CloseBracketHandler();
     else if (txt.equals("=")) EqualHandler();
     else if (txt.equals(".")) DotHandler();
-    else if (txt.equals("abs")) OperatorHandler(" abs(");
-    else if (txt.equals("mod")) OperatorHandler(" mod ");
+    else if (txt.equals("abs")) {
+      // absは特別
+      // 直前が数字の場合はreturn
+      if (!Utility.isAfterOperator(str)) return;
+      AppendToText("abs(");
+      bracketCnt++;
+      isDotUsed = false;
+    } else if (txt.equals("mod")) OperatorHandler(" mod ");
     else if (txt.equals("log")) OperatorHandler(" log base ");
     else if (!Utility.isNumber(txt) && !txt.equals("e")) OperatorHandler(" " + txt + " ");
     else NumberHandler(txt);
@@ -198,6 +207,9 @@ public class App extends Application {
    * @param s 扱う数字
    */
   private void NumberHandler(String s) {
+    // 括弧のあとは演算子が来る
+    if (str.endsWith(")")) return;
+
     // e は単体であるべき
     if (str.endsWith("e")) return;
     if (s.equals("e") && !Utility.isAfterOperator(str)) return;
