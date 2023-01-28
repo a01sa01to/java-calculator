@@ -43,6 +43,13 @@ class Utility {
   }
 }
 
+class Parser {
+  public static String Parse(String s) {
+    // Todo: implement
+    return "0";
+  }
+}
+
 public class App extends Application {
   // ----- Member Variables ----- //
   static String str = "0";
@@ -193,8 +200,7 @@ public class App extends Application {
    * 「=」が押されたときの処理
    */
   private void EqualHandler() {
-    // Todo: implement
-    AppendToText("=");
+    txt.setText(str = Parser.Parse(str));
   }
 
   /**
