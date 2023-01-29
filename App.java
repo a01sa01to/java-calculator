@@ -261,8 +261,14 @@ public class App extends Application {
    * BackSpace の処理
    */
   private void BackspaceHandler() {
-    assert (str.length() > 0);
-    if (str.endsWith("abs(")) {
+    assert str.length() > 0;
+    if (isEqualUsed) {
+      // = まで消したい
+      int idx = str.indexOf(" = ");
+      str = str.substring(0, idx);
+      isEqualUsed = false;
+      for (int i = 2; i < 25; i++) buttons[i].setDisable(false);
+    } else if (str.endsWith("abs(")) {
       // 特殊例
       str = str.substring(0, str.length() - 4);
       bracketCnt--;
