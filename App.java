@@ -77,10 +77,10 @@ class Parser {
     // Initialize
     isError = false;
     errMsg = "";
-    String t = s.replaceAll("log base", "log");
-    t = t.replaceAll("(", "( ");
-    t = t.replaceAll(")", " )");
-    t = t.replaceAll("  ", " ");
+    String t = s.replace("log base", "log");
+    t = t.replace("(", "( ");
+    t = t.replace(")", " )");
+    t = t.replace("  ", " ");
     tokens = t.split(" ");
     System.out.print("Tokens: ");
     PrintArray(tokens);
@@ -91,6 +91,7 @@ class Parser {
 
   // 括弧外の + - を処理する
   private static double Eq1(int l, int r) {
+    System.out.printf("Eq1: l=%d, r=%d\n", l, r);
     if (r - l == 1) {
       if (!Utility.isNumber(tokens[l])) {
         return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
@@ -110,14 +111,15 @@ class Parser {
     PrintArray(lst);
     double ret = Eq2(l, lst.get(0));
     for (int i = 0; i < lst.size() - 1; i++) {
-      if (tokens[lst.get(i)].equals("+")) ret += Eq2(lst.get(i) + 1, lst.get(i + 1) - 1);
-      if (tokens[lst.get(i)].equals("-")) ret -= Eq2(lst.get(i) + 1, lst.get(i + 1) - 1);
+      if (tokens[lst.get(i)].equals("+")) ret += Eq2(lst.get(i) + 1, lst.get(i + 1));
+      if (tokens[lst.get(i)].equals("-")) ret -= Eq2(lst.get(i) + 1, lst.get(i + 1));
     }
     return ret;
   }
 
   // 括弧外の * / mod を処理する
   private static double Eq2(int l, int r) {
+    System.out.printf("Eq2: l=%d, r=%d\n", l, r);
     if (r - l == 1) {
       if (!Utility.isNumber(tokens[l])) {
         return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
@@ -138,14 +140,14 @@ class Parser {
     PrintArray(lst);
     double ret = Eq2(l, lst.get(0));
     for (int i = 0; i < lst.size() - 1; i++) {
-      if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+      if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1));
       if (tokens[lst.get(i)].equals("/")) {
-        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1));
         if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
         ret /= tmp;
       }
       if (tokens[lst.get(i)].equals("mod")) {
-        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1));
         if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
         ret %= tmp;
       }
