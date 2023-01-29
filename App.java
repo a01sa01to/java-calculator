@@ -276,6 +276,7 @@ public class App extends Application {
     else if (txt.equals("=")) EqualHandler();
     else if (txt.equals(".")) DotHandler();
     else if (txt.equals("abs")) {
+      str = Utility.removeLeadingZero(str);
       AppendToText("abs(");
       bracketCnt++;
       isDotUsed = false;
@@ -447,9 +448,14 @@ public class App extends Application {
 
     // 演算子 と =
     {
-      final Integer[] idx = {8, 13, 14, 18, 19, 22, 23, 24};
+      final Integer[] idx = {8, 13, 14, 18, 19, 23, 24};
       // 演算子の後ろに演算子はいけない & 小数点の後ろじゃない
-      if (!Utility.isAfterOperator(str) && !str.endsWith(".")) for (Integer i : idx) buttons[i].setDisable(false);
+      boolean chk = !Utility.isAfterOperator(str) && !str.endsWith(".");
+      if (chk) for (Integer i : idx) buttons[i].setDisable(false);
+
+      // =
+      // 括弧は閉じている
+      if (chk && bracketCnt == 0) buttons[22].setDisable(false);
     }
 
     // 小数点
