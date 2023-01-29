@@ -175,6 +175,8 @@ public class App extends Application {
   static ScrollPane topLabel = new ScrollPane();
   static Boolean isDotUsed = false;
   static Integer bracketCnt = 0;
+  static Boolean isEqualUsed = false;
+  static Button[] buttons = new Button[25];
 
   // ----- Constants ----- //
 
@@ -201,7 +203,6 @@ public class App extends Application {
 
     // Button Display
     GridPane gridPane = new GridPane();
-    Button[] buttons = new Button[25];
     for (int i = 0; i < 25; i++) {
       buttons[i] = new Button();
       buttons[i].setPrefSize(50, 50);
@@ -250,8 +251,10 @@ public class App extends Application {
   private void ClearHandler() {
     txt.setText(str = "0");
     isDotUsed = false;
+    isEqualUsed = false;
     bracketCnt = 0;
     ScrollLabelToRight();
+    for (int i = 2; i < 25; i++) buttons[i].setDisable(false);
   }
 
   /**
@@ -318,7 +321,10 @@ public class App extends Application {
    * 「=」が押されたときの処理
    */
   private void EqualHandler() {
-    txt.setText(str = Parser.Parse(str));
+    if (Utility.isAfterOperator(str)) return;
+    txt.setText(str = str.concat(" = " + Parser.Parse(str)));
+    isEqualUsed = true;
+    for (int i = 2; i < 25; i++) buttons[i].setDisable(true);
   }
 
   /**
