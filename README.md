@@ -40,3 +40,15 @@ I've checked this app works with...
 - `log` : "x log base y" = $\log_y (x)$
 - `mod` : Modulo
 - `abs` : Absolute value
+
+## Keyboard Input
+
+You can use your keyboard to input, instead of the buttons.
+
+- `C` : <kbd>Delete</kbd>
+- `BS` : <kbd>BackSpace</kbd>
+- `mod` : <kbd>%</kbd>
+- `abs` : <kbd>|</kbd> (vertical bar)
+- `log` : <kbd>L</kbd>
+- `=` : <kbd>Enter</kbd> or <kbd>=</kbd>
+- others : corresponding keys
