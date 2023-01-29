@@ -105,7 +105,7 @@ class Parser {
   private static double ParseNum(int idx) {
     if (tokens[idx].equals("e")) return Math.E;
     if (!Utility.isNumber(tokens[idx])) {
-      return ThrowError("Internal Error (token[%d](%s) is not a number)", idx, tokens[idx]);
+      return ThrowError("Error (NaN)", idx, tokens[idx]);
     }
     return Double.parseDouble(tokens[idx]);
   }
@@ -154,12 +154,12 @@ class Parser {
       if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1));
       if (tokens[lst.get(i)].equals("/")) {
         double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1));
-        if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
+        if (tmp == 0) return ThrowError("Error (div 0)");
         ret /= tmp;
       }
       if (tokens[lst.get(i)].equals("mod")) {
         double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1));
-        if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
+        if (tmp == 0) return ThrowError("Error (mod 0)");
         ret %= tmp;
       }
     }
@@ -186,7 +186,7 @@ class Parser {
       if (tokens[lst.get(i)].equals("^")) ret = Math.pow(ret, Eq4(lst.get(i) + 1, lst.get(i + 1)));
       if (tokens[lst.get(i)].equals("log")) {
         double tmp = Eq4(lst.get(i) + 1, lst.get(i + 1));
-        if (tmp == 1) return ThrowError("Cannot Calculate log with base 1 (token[%d]-token[%d])", l, r - 1);
+        if (tmp == 1) return ThrowError("Error (log base 1)");
         ret = Math.log(ret) / Math.log(tmp);
       }
     }
@@ -331,8 +331,7 @@ public class App extends Application {
       if (tokens[r - 1].contains(".")) isDotUsed = true;
 
       // つなげる
-      if (r > 0) str = tokens[0];
-      else str = "";
+      str = tokens[0];
       for (int i = 1; i < r; i++) str = str.concat(" " + tokens[i]);
     } else {
       // 数字で終わっている
