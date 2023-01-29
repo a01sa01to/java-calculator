@@ -47,6 +47,7 @@ class Utility {
 
   /**
    * 配列を出力する
+   *
    * @param arr 配列
    * @param <T> 配列要素の型
    */
@@ -60,6 +61,7 @@ class Utility {
 
   /**
    * 配列を出力する
+   *
    * @param arr 配列
    * @param <T> 配列要素の型
    */
@@ -100,15 +102,18 @@ class Parser {
     return isError ? errMsg : Double.toString(ret);
   }
 
+  private static double ParseNum(int idx) {
+    if (tokens[idx].equals("e")) return Math.E;
+    if (!Utility.isNumber(tokens[idx])) {
+      return ThrowError("Internal Error (token[%d](%s) is not a number)", idx, tokens[idx]);
+    }
+    return Double.parseDouble(tokens[idx]);
+  }
+
   // 括弧外の + - を処理する
   private static double Eq1(int l, int r) {
     System.out.printf("Eq1: l=%d, r=%d\n", l, r);
-    if (r - l == 1) {
-      if (!Utility.isNumber(tokens[l])) {
-        return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
-      }
-      return Double.parseDouble(tokens[l]);
-    }
+    if (r - l == 1) return ParseNum(l);
     int bracketCnt = 0;
     List<Integer> lst = new ArrayList<>();
     for (int i = l; i < r; i++) {
@@ -131,12 +136,7 @@ class Parser {
   // 括弧外の * / mod を処理する
   private static double Eq2(int l, int r) {
     System.out.printf("Eq2: l=%d, r=%d\n", l, r);
-    if (r - l == 1) {
-      if (!Utility.isNumber(tokens[l])) {
-        return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
-      }
-      return Double.parseDouble(tokens[l]);
-    }
+    if (r - l == 1) return ParseNum(l);
     int bracketCnt = 0;
     List<Integer> lst = new ArrayList<>();
     for (int i = l; i < r; i++) {
@@ -149,7 +149,7 @@ class Parser {
     lst.add(r);
     System.out.print("Eq2: ");
     Utility.PrintArray(lst);
-    double ret = Eq2(l, lst.get(0));
+    double ret = Eq3(l, lst.get(0));
     for (int i = 0; i < lst.size() - 1; i++) {
       if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1));
       if (tokens[lst.get(i)].equals("/")) {
@@ -168,14 +168,46 @@ class Parser {
 
   // 括弧外の ^ log を処理する
   private static double Eq3(int l, int r) {
-    // todo
-    return 1;
+    System.out.printf("Eq3: l=%d, r=%d\n", l, r);
+    if (r - l == 1) return ParseNum(l);
+    int bracketCnt = 0;
+    List<Integer> lst = new ArrayList<>();
+    for (int i = l; i < r; i++) {
+      if (tokens[i].contains("(")) bracketCnt++;
+      if (tokens[i].contains(")")) bracketCnt--;
+      if (bracketCnt == 0 && tokens[i].equals("^")) lst.add(i);
+      if (bracketCnt == 0 && tokens[i].equals("log")) lst.add(i);
+    }
+    lst.add(r);
+    System.out.print("Eq3: ");
+    Utility.PrintArray(lst);
+    double ret = Eq4(l, lst.get(0));
+    for (int i = 0; i < lst.size() - 1; i++) {
+      if (tokens[lst.get(i)].equals("^")) ret = Math.pow(ret, Eq4(lst.get(i) + 1, lst.get(i + 1)));
+      if (tokens[lst.get(i)].equals("log")) {
+        double tmp = Eq4(lst.get(i) + 1, lst.get(i + 1));
+        if (tmp == 1) return ThrowError("Cannot Calculate log with base 1 (token[%d]-token[%d])", l, r - 1);
+        ret = Math.log(ret) / Math.log(tmp);
+      }
+    }
+    return ret;
   }
 
   // 括弧を一段階下げる
   private static double Eq4(int l, int r) {
-    // todo
-    return 2;
+    System.out.printf("Eq4: l=%d, r=%d\n", l, r);
+    if (r - l == 1) return ParseNum(l);
+    int lft = -1, rgt = -1;
+    for (int i = l; i < r; i++) {
+      if (tokens[i].contains("(")) lft = i;
+      if (tokens[i].contains(")")) rgt = i;
+    }
+    System.out.printf("lft=%d, rgt=%d\n", l, r);
+    assert lft != -1;
+    assert rgt != -1;
+    double tmp = Eq1(lft + 1, rgt);
+    if (tokens[lft].contains("abs")) return Math.abs(tmp);
+    return tmp;
   }
 }
 
