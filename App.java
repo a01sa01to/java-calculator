@@ -394,10 +394,10 @@ public class App extends Application {
     // 数字
     {
       final Integer[] idx = {5, 6, 7, 10, 11, 12, 15, 16, 17, 20};
-      Boolean chk = true;
+      boolean chk;
 
       // 括弧のあとは演算子が来る
-      chk &= !(str.endsWith(")"));
+      chk = !(str.endsWith(")"));
 
       // e は単体であるべき
       chk &= !(str.endsWith("e"));
@@ -411,10 +411,10 @@ public class App extends Application {
     // 演算子 と =
     {
       final Integer[] idx = {8, 13, 14, 18, 19, 22, 23, 24};
-      Boolean chk = true;
+      boolean chk;
 
       // 演算子の後ろに演算子はいけない
-      chk &= !(Utility.isAfterOperator(str));
+      chk = !(Utility.isAfterOperator(str));
 
       // 小数点の後ろ
       chk &= !str.endsWith(".");
