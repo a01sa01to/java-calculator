@@ -52,16 +52,16 @@ class Parser {
   private static String errMsg = "";
 
   private static <T> void PrintArray(T[] arr) {
-    for (int i = 0; i < arr.length; i++) {
-      System.out.print(arr[i]);
+    for (T t : arr) {
+      System.out.print(t);
       System.out.print(" ");
     }
     System.out.print("\n");
   }
 
   private static <T> void PrintArray(List<T> arr) {
-    for (int i = 0; i < arr.size(); i++) {
-      System.out.print(arr.get(i));
+    for (T t : arr) {
+      System.out.print(t);
       System.out.print(" ");
     }
     System.out.print("\n");
