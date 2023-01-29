@@ -211,6 +211,7 @@ public class App extends Application {
       gridPane.add(buttons[i], i % 5, i / 5);
     }
     root.setCenter(gridPane);
+    UpdateButtonState();
 
     primaryStage.setScene(new Scene(root));
     primaryStage.show();
@@ -232,9 +233,6 @@ public class App extends Application {
     else if (txt.equals("=")) EqualHandler();
     else if (txt.equals(".")) DotHandler();
     else if (txt.equals("abs")) {
-      // absは特別
-      // 直前が数字の場合はreturn
-      if (!Utility.isAfterOperator(str)) return;
       AppendToText("abs(");
       bracketCnt++;
       isDotUsed = false;
@@ -243,6 +241,7 @@ public class App extends Application {
     else if (!Utility.isNumber(txt) && !txt.equals("e")) OperatorHandler(" " + txt + " ");
     else NumberHandler(txt);
     ScrollLabelToRight();
+    UpdateButtonState();
   }
 
   /**
@@ -305,9 +304,6 @@ public class App extends Application {
    * 開き括弧が押された時の処理
    */
   private void OpenBracketHandler() {
-    // 数字の直後かつ初期状態じゃない
-    if (!Utility.isAfterOperator(str) && !str.equals("0")) return;
-
     str = Utility.removeLeadingZero(str);
     bracketCnt++;
     AppendToText("(");
@@ -317,12 +313,6 @@ public class App extends Application {
    * 閉じ括弧が押された時の処理
    */
   private void CloseBracketHandler() {
-    // 演算子直後の閉じ括弧
-    if (Utility.isAfterOperator(str)) return;
-
-    // 対応する開き括弧がない
-    if (bracketCnt == 0) return;
-
     bracketCnt--;
     AppendToText(")");
   }
@@ -341,9 +331,6 @@ public class App extends Application {
    * 小数点を扱う
    */
   private void DotHandler() {
-    // すでに小数点が使われているなら避けるべき
-    if (isDotUsed) return;
-
     // 演算子の直後は0を加える
     if (Utility.isAfterOperator(str)) NumberHandler("0");
 
@@ -357,9 +344,6 @@ public class App extends Application {
    * @param s 扱う演算子
    */
   private void OperatorHandler(String s) {
-    // 演算子の後ろに演算子はいけない
-    if (Utility.isAfterOperator(str)) return;
-
     AppendToText(s);
 
     // 小数点をもう一度使えるようにする
@@ -372,13 +356,6 @@ public class App extends Application {
    * @param s 扱う数字
    */
   private void NumberHandler(String s) {
-    // 括弧のあとは演算子が来る
-    if (str.endsWith(")")) return;
-
-    // e は単体であるべき
-    if (str.endsWith("e")) return;
-    if (s.equals("e") && !Utility.isAfterOperator(str)) return;
-
     // Leading-0sは消す
     str = Utility.removeLeadingZero(str);
 
@@ -399,5 +376,66 @@ public class App extends Application {
    */
   private void ScrollLabelToRight() {
     topLabel.setHvalue(topLabel.getHmax());
+  }
+
+  /**
+   * 現在の状況に応じてボタンの有効状態を更新する
+   */
+  private void UpdateButtonState() {
+    // {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"}
+    //  0     1     2    3    4    5    6    7     8    9     10   11   12   13   14     15  16    17   18   19     20   21   22   23   24
+
+    // とりあえずC,BS以外全部無効化
+    for (int i = 2; i < 25; i++) buttons[i].setDisable(true);
+
+    // = が使われている場合はそのまま
+    if (isEqualUsed) return;
+
+    // 数字
+    {
+      final Integer[] idx = {5, 6, 7, 10, 11, 12, 15, 16, 17, 20};
+      Boolean chk = true;
+
+      // 括弧のあとは演算子が来る
+      chk &= !(str.endsWith(")"));
+
+      // e は単体であるべき
+      chk &= !(str.endsWith("e"));
+
+      if (chk) for (Integer i : idx) buttons[i].setDisable(false);
+
+      // eの判定 演算子直後 or 初期状態
+      if (chk && (Utility.isAfterOperator(str) || str.equals("0"))) buttons[4].setDisable(false);
+    }
+
+    // 演算子 と =
+    {
+      final Integer[] idx = {8, 13, 14, 18, 19, 22, 23, 24};
+      Boolean chk = true;
+
+      // 演算子の後ろに演算子はいけない
+      chk &= !(Utility.isAfterOperator(str));
+
+      // 小数点の後ろ
+      chk &= !str.endsWith(".");
+
+      if (chk) for (Integer i : idx) buttons[i].setDisable(false);
+    }
+
+    // 小数点
+    // すでに小数点が使われていない & 数字の後
+    if (!isDotUsed && !Utility.isAfterOperator(str) && !str.endsWith("e")) buttons[21].setDisable(false);
+
+    // abs
+    // 直前が数字ではない or 初期状態
+    if (Utility.isAfterOperator(str) || str.equals("0")) buttons[9].setDisable(false);
+
+    // (
+    // 数字の直後かつ初期状態じゃない
+    if (Utility.isAfterOperator(str) || str.equals("0")) buttons[2].setDisable(false);
+
+    // )
+    // 演算子直後の閉じ括弧じゃない & 対応する開き括弧がある
+    if (!Utility.isAfterOperator(str) && bracketCnt > 0) buttons[3].setDisable(false);
   }
 }
