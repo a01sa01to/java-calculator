@@ -266,6 +266,7 @@ public class App extends Application {
 
     primaryStage.setScene(new Scene(root));
     primaryStage.show();
+    topLabel.requestFocus();
   }
 
   // Button Input Converter
@@ -273,6 +274,7 @@ public class App extends Application {
     Button btn = (Button) ev.getSource();
     String txt = btn.getText();
     onInput(txt);
+    topLabel.requestFocus();
   }
 
   // Keyboard Input Converter
