@@ -279,12 +279,16 @@ public class App extends Application {
       int r = tokens.length;
       while (r > 0 && (!Utility.isNumber(tokens[r - 1]) && !tokens[r - 1].equals("e"))) r--;
 
+      // 最後に小数点を使っているか
+      if (tokens[r - 1].contains(".")) isDotUsed = true;
+
       // つなげる
       if (r > 0) str = tokens[0];
       else str = "";
       for (int i = 1; i < r; i++) str = str.concat(" " + tokens[i]);
     } else {
       // 数字で終わっている
+      if (str.charAt(str.length() - 1) == '.') isDotUsed = false;
       str = str.substring(0, str.length() - 1);
     }
     if (str.length() == 0) str = "0";
