@@ -8,6 +8,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Utility {
   /**
    * 演算子で終わっているかどうかの判定
@@ -44,9 +47,122 @@ class Utility {
 }
 
 class Parser {
+  private static String[] tokens;
+  private static Boolean isError = false;
+  private static String errMsg = "";
+
+  private static <T> void PrintArray(T[] arr) {
+    for (int i = 0; i < arr.length; i++) {
+      System.out.print(arr[i]);
+      System.out.print(" ");
+    }
+    System.out.print("\n");
+  }
+
+  private static <T> void PrintArray(List<T> arr) {
+    for (int i = 0; i < arr.size(); i++) {
+      System.out.print(arr.get(i));
+      System.out.print(" ");
+    }
+    System.out.print("\n");
+  }
+
+  private static double ThrowError(String format, Object... arr) {
+    isError = true;
+    errMsg = String.format(format, arr);
+    return 0;
+  }
+
   public static String Parse(String s) {
-    // Todo: implement
-    return "0";
+    // Initialize
+    isError = false;
+    errMsg = "";
+    String t = s.replaceAll("log base", "log");
+    t = t.replaceAll("(", "( ");
+    t = t.replaceAll(")", " )");
+    t = t.replaceAll("  ", " ");
+    tokens = t.split(" ");
+    System.out.print("Tokens: ");
+    PrintArray(tokens);
+
+    double ret = Eq1(0, tokens.length);
+    return isError ? errMsg : Double.toString(ret);
+  }
+
+  // 括弧外の + - を処理する
+  private static double Eq1(int l, int r) {
+    if (r - l == 1) {
+      if (!Utility.isNumber(tokens[l])) {
+        return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
+      }
+      return Double.parseDouble(tokens[l]);
+    }
+    int bracketCnt = 0;
+    List<Integer> lst = new ArrayList<>();
+    for (int i = l; i < r; i++) {
+      if (tokens[i].contains("(")) bracketCnt++;
+      if (tokens[i].contains(")")) bracketCnt--;
+      if (bracketCnt == 0 && tokens[i].equals("+")) lst.add(i);
+      if (bracketCnt == 0 && tokens[i].equals("-")) lst.add(i);
+    }
+    lst.add(r);
+    System.out.print("Eq1: ");
+    PrintArray(lst);
+    double ret = Eq2(l, lst.get(0));
+    for (int i = 0; i < lst.size() - 1; i++) {
+      if (tokens[lst.get(i)].equals("+")) ret += Eq2(lst.get(i) + 1, lst.get(i + 1) - 1);
+      if (tokens[lst.get(i)].equals("-")) ret -= Eq2(lst.get(i) + 1, lst.get(i + 1) - 1);
+    }
+    return ret;
+  }
+
+  // 括弧外の * / mod を処理する
+  private static double Eq2(int l, int r) {
+    if (r - l == 1) {
+      if (!Utility.isNumber(tokens[l])) {
+        return ThrowError("Internal Error (token[%d](%s) is not a number)", l, tokens[l]);
+      }
+      return Double.parseDouble(tokens[l]);
+    }
+    int bracketCnt = 0;
+    List<Integer> lst = new ArrayList<>();
+    for (int i = l; i < r; i++) {
+      if (tokens[i].contains("(")) bracketCnt++;
+      if (tokens[i].contains(")")) bracketCnt--;
+      if (bracketCnt == 0 && tokens[i].equals("*")) lst.add(i);
+      if (bracketCnt == 0 && tokens[i].equals("/")) lst.add(i);
+      if (bracketCnt == 0 && tokens[i].equals("mod")) lst.add(i);
+    }
+    lst.add(r);
+    System.out.print("Eq2: ");
+    PrintArray(lst);
+    double ret = Eq2(l, lst.get(0));
+    for (int i = 0; i < lst.size() - 1; i++) {
+      if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+      if (tokens[lst.get(i)].equals("/")) {
+        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+        if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
+        ret /= tmp;
+      }
+      if (tokens[lst.get(i)].equals("mod")) {
+        double tmp = Eq3(lst.get(i) + 1, lst.get(i + 1) - 1);
+        if (tmp == 0) return ThrowError("Cannot Divide by 0 (token[%d]-token[%d])", l, r - 1);
+        ret %= tmp;
+      }
+    }
+    return ret;
+  }
+
+  // 括弧外の ^ log を処理する
+  private static double Eq3(int l, int r) {
+    // todo
+    return 1;
+  }
+
+  // 括弧を一段階下げる
+  private static double Eq4(int l, int r) {
+    // todo
+    return 2;
   }
 }
 
