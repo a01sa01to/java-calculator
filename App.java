@@ -394,13 +394,8 @@ public class App extends Application {
     // 数字
     {
       final Integer[] idx = {5, 6, 7, 10, 11, 12, 15, 16, 17, 20};
-      boolean chk;
-
-      // 括弧のあとは演算子が来る
-      chk = !(str.endsWith(")"));
-
-      // e は単体であるべき
-      chk &= !(str.endsWith("e"));
+      // 括弧のあとは演算子が来る & e は単体であるべき
+      boolean chk = !str.endsWith(")") && !str.endsWith("e");
 
       if (chk) for (Integer i : idx) buttons[i].setDisable(false);
 
@@ -411,15 +406,8 @@ public class App extends Application {
     // 演算子 と =
     {
       final Integer[] idx = {8, 13, 14, 18, 19, 22, 23, 24};
-      boolean chk;
-
-      // 演算子の後ろに演算子はいけない
-      chk = !(Utility.isAfterOperator(str));
-
-      // 小数点の後ろ
-      chk &= !str.endsWith(".");
-
-      if (chk) for (Integer i : idx) buttons[i].setDisable(false);
+      // 演算子の後ろに演算子はいけない & 小数点の後ろじゃない
+      if (!Utility.isAfterOperator(str) && !str.endsWith(".")) for (Integer i : idx) buttons[i].setDisable(false);
     }
 
     // 小数点
