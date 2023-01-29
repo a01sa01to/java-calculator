@@ -216,18 +216,18 @@ class Parser {
 }
 
 public class App extends Application {
+  // ----- Constants ----- //
+  static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
+  static final Integer BtnNum = buttonText.length;
+
   // ----- Member Variables ----- //
   static String str = "0";
   static Text txt = new Text(str);
   static ScrollPane topLabel = new ScrollPane();
-  static Boolean isDotUsed = false;
   static Integer bracketCnt = 0;
+  static Boolean isDotUsed = false;
   static Boolean isEqualUsed = false;
-  static Button[] buttons = new Button[25];
-
-  // ----- Constants ----- //
-
-  static final String[] buttonText = {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"};
+  static Button[] buttons = new Button[BtnNum];
 
   // ----- Main ----- //
   @Override
@@ -250,7 +250,7 @@ public class App extends Application {
 
     // Button Display
     GridPane gridPane = new GridPane();
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < BtnNum; i++) {
       buttons[i] = new Button();
       buttons[i].setPrefSize(50, 50);
       buttons[i].setText(buttonText[i]);
@@ -299,7 +299,7 @@ public class App extends Application {
   // Input Handler Main
   private void onInput(String txt) {
     boolean btnExist = false;
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < BtnNum; i++) {
       if (buttons[i].getText().equals(txt)) {
         btnExist = true;
         if (buttons[i].isDisabled()) return;
@@ -335,7 +335,7 @@ public class App extends Application {
     isEqualUsed = false;
     bracketCnt = 0;
     ScrollLabelToRight();
-    for (int i = 2; i < 25; i++) buttons[i].setDisable(false);
+    for (int i = 2; i < BtnNum; i++) buttons[i].setDisable(false);
   }
 
   /**
@@ -348,7 +348,7 @@ public class App extends Application {
       int idx = str.indexOf(" = ");
       str = str.substring(0, idx);
       isEqualUsed = false;
-      for (int i = 2; i < 25; i++) buttons[i].setDisable(false);
+      for (int i = 2; i < BtnNum; i++) buttons[i].setDisable(false);
     } else if (str.endsWith("abs(")) {
       // 特殊例
       str = str.substring(0, str.length() - 4);
@@ -405,7 +405,7 @@ public class App extends Application {
     if (Utility.isAfterOperator(str)) return;
     txt.setText(str = str.concat(" = " + Parser.Parse(str)));
     isEqualUsed = true;
-    for (int i = 2; i < 25; i++) buttons[i].setDisable(true);
+    for (int i = 2; i < BtnNum; i++) buttons[i].setDisable(true);
   }
 
   /**
@@ -463,11 +463,8 @@ public class App extends Application {
    * 現在の状況に応じてボタンの有効状態を更新する
    */
   private void UpdateButtonState() {
-    // {"C", "BS", "(", ")", "e", "7", "8", "9", "/", "abs", "4", "5", "6", "*", "mod", "1", "2", "3", "-", "log", "0", ".", "=", "+", "^"}
-    //  0     1     2    3    4    5    6    7     8    9     10   11   12   13   14     15  16    17   18   19     20   21   22   23   24
-
     // とりあえずC,BS以外全部無効化
-    for (int i = 2; i < 25; i++) buttons[i].setDisable(true);
+    for (int i = 2; i < BtnNum; i++) buttons[i].setDisable(true);
 
     // = が使われている場合はそのまま
     if (isEqualUsed) return;
