@@ -494,7 +494,8 @@ public class App extends Application {
 
     // 小数点
     // すでに小数点が使われていない & 数字の後
-    if (!isDotUsed && !Utility.isAfterOperator(str) && !str.endsWith("e")) buttons[21].setDisable(false);
+    if (!isDotUsed && !Utility.isAfterOperator(str) && Utility.isNumber(str.substring(str.length() - 1)))
+      buttons[21].setDisable(false);
 
     // abs
     // 直前が数字ではない or 初期状態
