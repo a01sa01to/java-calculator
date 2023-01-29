@@ -83,7 +83,6 @@ class Parser {
   private static Boolean isError = false;
   private static String errMsg = "";
 
-
   private static double ThrowError(String format, Object... arr) {
     isError = true;
     errMsg = String.format(format, arr);
@@ -201,13 +200,13 @@ class Parser {
   private static double Eq4(int l, int r) {
     System.out.printf("Eq4: l=%d, r=%d\n", l, r);
     if (r - l == 1) return ParseNum(l);
-    int lft = -1, rgt = -1;
+    int lft = (int) 1e9, rgt = -1;
     for (int i = l; i < r; i++) {
-      if (tokens[i].contains("(")) lft = i;
-      if (tokens[i].contains(")")) rgt = i;
+      if (tokens[i].contains("(")) lft = Math.min(lft, i);
+      if (tokens[i].contains(")")) rgt = Math.max(rgt, i);
     }
     System.out.printf("lft=%d, rgt=%d\n", l, r);
-    assert lft != -1;
+    assert lft != (int) 1e9;
     assert rgt != -1;
     double tmp = Eq1(lft + 1, rgt);
     if (tokens[lft].contains("abs")) return Math.abs(tmp);
