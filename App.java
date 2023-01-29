@@ -3,6 +3,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -10,6 +12,8 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static javafx.scene.input.KeyEvent.CHAR_UNDEFINED;
 
 class Utility {
   /**
@@ -250,25 +254,57 @@ public class App extends Application {
       buttons[i] = new Button();
       buttons[i].setPrefSize(50, 50);
       buttons[i].setText(buttonText[i]);
-      buttons[i].setOnAction(this::onInput);
+      buttons[i].setOnAction(this::onBtnInput);
       gridPane.add(buttons[i], i % 5, i / 5);
     }
     root.setCenter(gridPane);
     UpdateButtonState();
+
+    // Keyboard Input
+    root.setOnKeyPressed(this::onSpecialKeyInput);
+    root.setOnKeyTyped(this::onNormalKeyInput);
 
     primaryStage.setScene(new Scene(root));
     primaryStage.show();
   }
 
   // Button Input Converter
-  private void onInput(ActionEvent ev) {
+  private void onBtnInput(ActionEvent ev) {
     Button btn = (Button) ev.getSource();
     String txt = btn.getText();
     onInput(txt);
   }
 
+  // Keyboard Input Converter
+  private void onSpecialKeyInput(KeyEvent ev) {
+    KeyCode code = ev.getCode();
+    assert code != KeyCode.UNDEFINED;
+    if (code == KeyCode.DELETE) onInput("C");
+    else if (code == KeyCode.BACK_SPACE) onInput("BS");
+    else if (code == KeyCode.ENTER) onInput("=");
+  }
+
+  private void onNormalKeyInput(KeyEvent ev) {
+    String str = ev.getCharacter();
+    assert !str.equals(CHAR_UNDEFINED);
+    str = str.toLowerCase();
+    if (str.equals("|")) str = "abs";
+    if (str.equals("l")) str = "log";
+    if (str.equals("%")) str = "mod";
+    onInput(str);
+  }
+
   // Input Handler Main
   private void onInput(String txt) {
+    boolean btnExist = false;
+    for (int i = 0; i < 25; i++) {
+      if (buttons[i].getText().equals(txt)) {
+        btnExist = true;
+        if (buttons[i].isDisabled()) return;
+      }
+    }
+    if (!btnExist) return;
+
     if (txt.equals("C")) ClearHandler();
     else if (txt.equals("BS")) BackspaceHandler();
     else if (txt.equals("(")) OpenBracketHandler();
