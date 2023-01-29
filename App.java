@@ -44,6 +44,32 @@ class Utility {
     if (lastToken.equals("0")) str = str.substring(0, str.length() - 1);
     return str;
   }
+
+  /**
+   * 配列を出力する
+   * @param arr 配列
+   * @param <T> 配列要素の型
+   */
+  static <T> void PrintArray(T[] arr) {
+    for (T t : arr) {
+      System.out.print(t);
+      System.out.print(" ");
+    }
+    System.out.print("\n");
+  }
+
+  /**
+   * 配列を出力する
+   * @param arr 配列
+   * @param <T> 配列要素の型
+   */
+  static <T> void PrintArray(List<T> arr) {
+    for (T t : arr) {
+      System.out.print(t);
+      System.out.print(" ");
+    }
+    System.out.print("\n");
+  }
 }
 
 class Parser {
@@ -51,21 +77,6 @@ class Parser {
   private static Boolean isError = false;
   private static String errMsg = "";
 
-  private static <T> void PrintArray(T[] arr) {
-    for (T t : arr) {
-      System.out.print(t);
-      System.out.print(" ");
-    }
-    System.out.print("\n");
-  }
-
-  private static <T> void PrintArray(List<T> arr) {
-    for (T t : arr) {
-      System.out.print(t);
-      System.out.print(" ");
-    }
-    System.out.print("\n");
-  }
 
   private static double ThrowError(String format, Object... arr) {
     isError = true;
@@ -83,7 +94,7 @@ class Parser {
     t = t.replace("  ", " ");
     tokens = t.split(" ");
     System.out.print("Tokens: ");
-    PrintArray(tokens);
+    Utility.PrintArray(tokens);
 
     double ret = Eq1(0, tokens.length);
     return isError ? errMsg : Double.toString(ret);
@@ -108,7 +119,7 @@ class Parser {
     }
     lst.add(r);
     System.out.print("Eq1: ");
-    PrintArray(lst);
+    Utility.PrintArray(lst);
     double ret = Eq2(l, lst.get(0));
     for (int i = 0; i < lst.size() - 1; i++) {
       if (tokens[lst.get(i)].equals("+")) ret += Eq2(lst.get(i) + 1, lst.get(i + 1));
@@ -137,7 +148,7 @@ class Parser {
     }
     lst.add(r);
     System.out.print("Eq2: ");
-    PrintArray(lst);
+    Utility.PrintArray(lst);
     double ret = Eq2(l, lst.get(0));
     for (int i = 0; i < lst.size() - 1; i++) {
       if (tokens[lst.get(i)].equals("*")) ret *= Eq3(lst.get(i) + 1, lst.get(i + 1));
